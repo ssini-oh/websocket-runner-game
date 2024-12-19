@@ -1,4 +1,5 @@
 import { CLIENT_VERSION } from '../constants.js';
+import { getGameAssets } from '../init/assets.js';
 import { getUser, removeUser } from '../models/user.model.js';
 import { createStage } from '../models/stage.model.js';
 import handlerMapping from './handlerMapping.js';
