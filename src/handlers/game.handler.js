@@ -12,7 +12,7 @@ export const gameStart = (uuid, payload) => {
   return { status: 'success' };
 };
 
-export const gameEnd = () => {
+export const gameEnd = (uuid, payload) => {
   // 클라이언트는 게임 종료 시 타임스탬프와 총 점수
   const { timestamp: gameEndTime, score } = payload;
   const stages = getStage(uuid);
@@ -43,4 +43,40 @@ export const gameEnd = () => {
   });
 
   return { status: 'success', message: 'Game ended', score };
+};
+
+export const gameClear = (uuid, payload) => {
+  const { timestamp: clearTime, score, clearedStageId } = payload;
+  const stages = getStage(uuid);
+
+  if (!stages.length) {
+    return { status: 'fail', message: 'No stages found for user' };
+  }
+
+  // 마지막 스테이지가 맞는지 검증
+  const { stages: stagesAssets } = getGameAssets();
+  const lastStage = stagesAssets.data[stagesAssets.data.length - 1];
+
+  if (clearedStageId !== lastStage.id) {
+    return { status: 'fail', message: 'Invalid stage clear' };
+  }
+
+  // 점수 검증 로직은 gameEnd와 동일하게 적용
+  let totalScore = 0;
+  stages.forEach((stage, index) => {
+    let stageEndTime = index === stages.length - 1 ? clearTime : stages[index + 1].timestamp;
+    const stageDuration = (stageEndTime - stage.timestamp) / 1000;
+    totalScore += stageDuration;
+  });
+
+  if (Math.abs(score - totalScore) > 5) {
+    return { status: 'fail', message: 'Score validation failed' };
+  }
+
+  return {
+    status: 'success',
+    message: 'Game cleared',
+    score,
+    clearedStageId,
+  };
 };
