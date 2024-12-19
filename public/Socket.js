@@ -18,6 +18,11 @@ let gameAssets = null;
 // 서버로부터 'response' 이벤트 수신 시 처리
 socket.on('response', (data) => {
   console.log(data);
+
+  // 게임 종료 응답 처리
+  if (data.message === 'Game ended') {
+    console.log('게임 종료 점수:', data.score);
+  }
 });
 
 // 서버와 연결 성공 시 실행되는 이벤트 핸들러
@@ -30,7 +35,6 @@ socket.on('connection', (data) => {
 // 서버로부터 'assets' 이벤트 수신 시 처리
 socket.on('assets', (data) => {
   gameAssets = data;
-  console.log('Socket.js / gameAssets: ', gameAssets);
 
   // assets 로드 완료 후 게임 초기화
   if (window.onAssetsLoaded) {

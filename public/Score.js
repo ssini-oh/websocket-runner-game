@@ -8,6 +8,7 @@ class Score {
   currentStageId = 1000; // 현재 스테이지 정보 추가
   scorePerSecond = 1; // 기본 점수 증가율
   stages = null; // 스테이지 정보를 저장할 변수
+  gameSpeed = 1; // 기본 게임 스피드
 
   constructor(ctx, scaleRatio) {
     this.ctx = ctx;
@@ -30,6 +31,7 @@ class Score {
       // 현재 스테이지의 점수 증가율 적용
       if (currentStage) {
         this.scorePerSecond = currentStage.scorePerSecond;
+        this.gameSpeed = currentStage.gameSpeed;
       }
 
       // 점수 증가 로직
@@ -38,10 +40,10 @@ class Score {
       // 다음 스테이지가 존재하고, 현재 점수가 다음 스테이지의 minScore를 넘었을 경우
       if (nextStage && Math.floor(this.score) >= nextStage.minScore) {
         this.stageChange = false;
+
         this.currentStageId = nextStage.id;
         this.currentStage++;
 
-        // 서버에 스테이지 변경 이벤트 전송
         sendEvent(11, { currentStage: currentStage.id, targetStage: nextStage.id });
 
         // 다음 스테이지 변경을 위해 stageChange 초기화
@@ -67,8 +69,17 @@ class Score {
       return false;
     }
   }
+
   getItem(itemId) {
-    this.score += 0;
+    const assets = getGameAssets();
+    if (!assets?.items?.data) return;
+
+    // item.json에서 해당하는 아이템의 점수 찾기
+    const itemData = assets.items.data.find((item) => item.id === itemId);
+    if (itemData) {
+      this.score += itemData.score;
+      console.log(`아이템 획득!!! ID: ${itemId}, 점수: ${itemData.score}`);
+    }
   }
 
   reset() {
@@ -88,6 +99,10 @@ class Score {
 
   getScore() {
     return this.score;
+  }
+
+  getGameSpeed() {
+    return this.gameSpeed;
   }
 
   draw() {

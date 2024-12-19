@@ -17,8 +17,12 @@ export const getStage = (uuid) => {
 // uuid: 유저의 고유 식별자
 // id: 스테이지 ID
 // timestamp: 스테이지 시작 시간
+// export const setStage = (uuid, id, timestamp) => {
+//   return stages[uuid].push({ id, timestamp });
+// };
 export const setStage = (uuid, id, timestamp) => {
-  return stages[uuid].push({ id, timestamp });
+  stages[uuid] = [{ id, timestamp }]; // 배열을 새로 만들어서 할당
+  return stages[uuid][0];
 };
 
 //---- 특정 유저의 스테이지 기록을 초기화하는 함수

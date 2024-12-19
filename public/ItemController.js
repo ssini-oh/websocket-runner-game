@@ -96,6 +96,7 @@ class ItemController {
     const collidedItem = this.items.find((item) => item.collideWith(sprite));
     if (collidedItem) {
       this.ctx.clearRect(collidedItem.x, collidedItem.y, collidedItem.width, collidedItem.height);
+      this.score.getItem(collidedItem.id);
       return {
         itemId: collidedItem.id,
       };

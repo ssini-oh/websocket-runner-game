@@ -36,7 +36,7 @@ onAssetsLoaded = (assets) => {
 window.onAssetsLoaded = onAssetsLoaded;
 
 const GAME_SPEED_START = 1;
-const GAME_SPEED_INCREMENT = 0.00001;
+// const GAME_SPEED_INCREMENT = 0.00001;
 
 // 게임 크기
 const GAME_WIDTH = 800;
@@ -202,7 +202,7 @@ function showStartGameText() {
 }
 
 function updateGameSpeed(deltaTime) {
-  gameSpeed += deltaTime * GAME_SPEED_INCREMENT;
+  gameSpeed = score.getGameSpeed();
 }
 
 function reset() {
