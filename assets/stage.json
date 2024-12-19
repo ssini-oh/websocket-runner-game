@@ -2,54 +2,12 @@
   "name": "stage",
   "version": "1.0.0",
   "data": [
-    {
-      "id": 1000,
-      "minScore": 0,
-      "maxScore": 99,
-      "scorePerSecond": 1,
-      "baseSpeed": 1.0
-    },
-    {
-      "id": 1001,
-      "minScore": 100,
-      "maxScore": 199,
-      "scorePerSecond": 1.5,
-      "baseSpeed": 1.2
-    },
-    {
-      "id": 1002,
-      "minScore": 200,
-      "maxScore": 299,
-      "scorePerSecond": 2,
-      "baseSpeed": 1.4
-    },
-    {
-      "id": 1003,
-      "minScore": 300,
-      "maxScore": 399,
-      "scorePerSecond": 2.5,
-      "baseSpeed": 1.6
-    },
-    {
-      "id": 1004,
-      "minScore": 400,
-      "maxScore": 499,
-      "scorePerSecond": 3,
-      "baseSpeed": 1.8
-    },
-    {
-      "id": 1005,
-      "minScore": 500,
-      "maxScore": 599,
-      "scorePerSecond": 3.5,
-      "baseSpeed": 2.0
-    },
-    {
-      "id": 1006,
-      "minScore": 600,
-      "maxScore": 699,
-      "scorePerSecond": 4,
-      "baseSpeed": 2.2
-    }
+    { "id": 1000, "minScore": 0, "maxScore": 50, "scorePerSecond": 1, "gameSpeed": 1 },
+    { "id": 1001, "minScore": 50, "maxScore": 300, "scorePerSecond": 1.5, "gameSpeed": 1.2 },
+    { "id": 1002, "minScore": 300, "maxScore": 600, "scorePerSecond": 2, "gameSpeed": 1.5 },
+    { "id": 1003, "minScore": 600, "maxScore": 1000, "scorePerSecond": 3, "gameSpeed": 1.8 },
+    { "id": 1004, "minScore": 1000, "maxScore": 1500, "scorePerSecond": 4, "gameSpeed": 2 },
+    { "id": 1005, "minScore": 1500, "maxScore": 2000, "scorePerSecond": 5, "gameSpeed": 2.5 },
+    { "id": 1006, "minScore": 2000, "maxScore": 2500, "scorePerSecond": 6, "gameSpeed": 3 }
   ]
 }
