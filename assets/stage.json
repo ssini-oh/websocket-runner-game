@@ -2,8 +2,8 @@
   "name": "stage",
   "version": "1.0.0",
   "data": [
-    { "id": 1000, "minScore": 0, "maxScore": 50, "scorePerSecond": 1, "gameSpeed": 1 },
-    { "id": 1001, "minScore": 50, "maxScore": 300, "scorePerSecond": 1.5, "gameSpeed": 1.2 },
+    { "id": 1000, "minScore": 0, "maxScore": 100, "scorePerSecond": 1, "gameSpeed": 1 },
+    { "id": 1001, "minScore": 100, "maxScore": 300, "scorePerSecond": 1.5, "gameSpeed": 1.2 },
     { "id": 1002, "minScore": 300, "maxScore": 600, "scorePerSecond": 2, "gameSpeed": 1.5 },
     { "id": 1003, "minScore": 600, "maxScore": 1000, "scorePerSecond": 3, "gameSpeed": 1.8 },
     { "id": 1004, "minScore": 1000, "maxScore": 1500, "scorePerSecond": 4, "gameSpeed": 2 },
