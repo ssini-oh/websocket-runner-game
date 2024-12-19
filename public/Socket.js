@@ -30,7 +30,7 @@ socket.on('connection', (data) => {
 // 서버로부터 'assets' 이벤트 수신 시 처리
 socket.on('assets', (data) => {
   gameAssets = data;
-  console.log('gameAssets: ', gameAssets);
+  console.log('Socket.js / gameAssets: ', gameAssets);
 
   // assets 로드 완료 후 게임 초기화
   if (window.onAssetsLoaded) {
@@ -38,10 +38,14 @@ socket.on('assets', (data) => {
   }
 });
 
+export function getGameAssets() {
+  return gameAssets;
+}
+
 // 서버로 이벤트를 전송하는 함수
 // handlerId: 서버에서 처리할 이벤트 핸들러 식별자
 // payload: 전송할 데이터
-const sendEvent = (handlerId, payload) => {
+export const sendEvent = (handlerId, payload) => {
   socket.emit('event', {
     userId, // 저장된 사용자 ID
     clientVersion: CLIENT_VERSION, // 클라이언트 버전
@@ -49,6 +53,3 @@ const sendEvent = (handlerId, payload) => {
     payload, // 전송할 데이터
   });
 };
-
-// sendEvent 함수를 외부에서 사용할 수 있도록 내보내기
-export { sendEvent, gameAssets };

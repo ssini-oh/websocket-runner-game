@@ -1,4 +1,4 @@
-import { sendEvent, gameAssets } from './Socket.js';
+import { sendEvent, getGameAssets } from './Socket.js';
 
 class Score {
   score = 0;
@@ -14,8 +14,10 @@ class Score {
     this.canvas = ctx.canvas;
     this.scaleRatio = scaleRatio;
 
-    if (gameAssets?.stages?.data) {
-      this.stages = gameAssets.stages.data;
+    const assets = getGameAssets();
+
+    if (assets?.stages?.data) {
+      this.stages = assets.stages.data;
     }
   }
 
