@@ -9,41 +9,15 @@ import { sendEvent } from './Socket.js';
 const canvas = document.getElementById('game');
 const ctx = canvas.getContext('2d');
 
-// Socket.js에서 assets를 받았을 때 실행될 콜백
-let onAssetsLoaded = null;
-
-function initGame(assets) {
-  setScreen();
-  window.addEventListener('resize', setScreen);
-
-  if (screen.orientation) {
-    screen.orientation.addEventListener('change', setScreen);
-  }
-
-  requestAnimationFrame(gameLoop);
-  window.addEventListener('keyup', reset, { once: true });
-}
-
-// Socket.js에서 호출할 콜백 함수 설정
-onAssetsLoaded = (assets) => {
-  console.log(assets);
-  if (assets?.stages?.data) {
-    initGame(assets);
-  }
-};
-
-// Socket.js에 콜백 등록
-window.onAssetsLoaded = onAssetsLoaded;
-
 const GAME_SPEED_START = 1;
-// const GAME_SPEED_INCREMENT = 0.00001;
+const GAME_SPEED_INCREMENT = 0.00001;
 
 // 게임 크기
 const GAME_WIDTH = 800;
 const GAME_HEIGHT = 200;
 
 // 플레이어
-// 800 * 200 사이즈의 캔버스에서는 ���미지의 기본크기가 크기때문에 1.5로 나눈 값을 사용. (비율 유지)
+// 800 * 200 사이즈의 캔버스에서는 이미지의 기본크기가 크기때문에 1.5로 나눈 값을 사용. (비율 유지)
 const PLAYER_WIDTH = 88 / 1.5; // 58
 const PLAYER_HEIGHT = 94 / 1.5; // 62
 const MAX_JUMP_HEIGHT = GAME_HEIGHT;
@@ -67,8 +41,6 @@ const ITEM_CONFIG = [
   { width: 50 / 1.5, height: 50 / 1.5, id: 2, image: 'images/items/pokeball_yellow.png' },
   { width: 50 / 1.5, height: 50 / 1.5, id: 3, image: 'images/items/pokeball_purple.png' },
   { width: 50 / 1.5, height: 50 / 1.5, id: 4, image: 'images/items/pokeball_cyan.png' },
-  { width: 50 / 1.5, height: 50 / 1.5, id: 5, image: 'images/items/pokeball_orange.png' },
-  { width: 50 / 1.5, height: 50 / 1.5, id: 6, image: 'images/items/pokeball_pink.png' },
 ];
 
 // 게임 요소들
@@ -82,7 +54,6 @@ let scaleRatio = null;
 let previousTime = null;
 let gameSpeed = GAME_SPEED_START;
 let gameover = false;
-let gameclear = false;
 let hasAddedEventListenersForRestart = false;
 let waitingToStart = true;
 
@@ -132,8 +103,9 @@ function createSprites() {
     };
   });
 
+  itemController = new ItemController(ctx, itemImages, scaleRatio, GROUND_SPEED);
+
   score = new Score(ctx, scaleRatio);
-  itemController = new ItemController(ctx, itemImages, scaleRatio, GROUND_SPEED, score);
 }
 
 function getScaleRatio() {
@@ -164,32 +136,11 @@ if (screen.orientation) {
 
 function showGameOver() {
   const fontSize = 70 * scaleRatio;
-  ctx.font = `${fontSize}px serif`;
-
+  ctx.font = `${fontSize}px Verdana`;
+  ctx.fillStyle = 'grey';
   const x = canvas.width / 4.5;
   const y = canvas.height / 2;
   ctx.fillText('GAME OVER', x, y);
-}
-
-function showGameClear() {
-  const fontSize = 70 * scaleRatio;
-  ctx.font = `${fontSize}px serif`;
-  ctx.fillStyle = 'grey';
-
-  const x = canvas.width / 4.5;
-  const y = canvas.height / 2;
-  ctx.fillText('GAME CLEAR', x, y);
-
-  // 재시작 안내 메시지
-  const smallFontSize = 20 * scaleRatio;
-  ctx.font = `${smallFontSize}px serif`;
-
-  const restartText = 'Press any key to restart';
-  const restartTextWidth = ctx.measureText(restartText).width;
-  const restartX = canvas.width / 2 - restartTextWidth / 2;
-  const restartY = canvas.height / 2 + smallFontSize + 20;
-
-  ctx.fillText(restartText, restartX, restartY);
 }
 
 function showStartGameText() {
@@ -202,13 +153,12 @@ function showStartGameText() {
 }
 
 function updateGameSpeed(deltaTime) {
-  gameSpeed = score.getGameSpeed();
+  gameSpeed += deltaTime * GAME_SPEED_INCREMENT;
 }
 
 function reset() {
   hasAddedEventListenersForRestart = false;
   gameover = false;
-  gameclear = false;
   waitingToStart = false;
 
   ground.reset();
@@ -249,7 +199,7 @@ function gameLoop(currentTime) {
 
   clearScreen();
 
-  if (!gameover && !gameclear && !waitingToStart) {
+  if (!gameover && !waitingToStart) {
     // update
     // 땅이 움직임
     ground.update(gameSpeed, deltaTime);
@@ -259,16 +209,8 @@ function gameLoop(currentTime) {
     // 달리기
     player.update(gameSpeed, deltaTime);
     updateGameSpeed(deltaTime);
-    // showGameOver();
-    // score.update(deltaTime);
 
-    // score.update가 true를 반환하면 게임 클리어
-    const isGameCleared = score.update(deltaTime);
-    if (isGameCleared) {
-      gameclear = true;
-      score.setHighScore();
-      setupGameReset();
-    }
+    score.update(deltaTime);
   }
 
   if (!gameover && cactiController.collideWith(player)) {
@@ -276,7 +218,6 @@ function gameLoop(currentTime) {
     score.setHighScore();
     setupGameReset();
   }
-
   const collideWithItem = itemController.collideWith(player);
   if (collideWithItem && collideWithItem.itemId) {
     score.getItem(collideWithItem.itemId);
@@ -291,10 +232,6 @@ function gameLoop(currentTime) {
 
   if (gameover) {
     showGameOver();
-  }
-
-  if (gameclear) {
-    showGameClear();
   }
 
   if (waitingToStart) {
